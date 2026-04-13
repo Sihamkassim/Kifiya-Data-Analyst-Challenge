@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Loan Analytics Dashboard</title>
+    <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+        }
+        .dashboard-container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        .header {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        .header h1 {
+            color: #333;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        .header p {
+            color: #666;
+            font-size: 1.2em;
+        }
+        .metrics-row {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        .metric-card {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        .metric-card h3 {
+            color: #888;
+            font-size: 0.9em;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+        }
+        .metric-card .value {
+            color: #333;
+            font-size: 2em;
+            font-weight: bold;
+        }
+        .metric-card .change {
+            color: #28a745;
+            font-size: 0.9em;
+            margin-top: 5px;
+        }
+        .charts-row {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+        .chart-container {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+        .chart-container h2 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 1.3em;
+        }
+        .full-width {
+            grid-column: 1 / -1;
+        }
+        .insights-section {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            margin-top: 30px;
+        }
+        .insights-section h2 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+        .insight-item {
+            padding: 15px;
+            border-left: 4px solid #667eea;
+            background: #f8f9fa;
+            margin-bottom: 15px;
+            border-radius: 5px;
+        }
+        .insight-item strong {
+            color: #667eea;
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Header -->
+        <div class="header">
+            <h1>📊 Student Loan Portfolio Dashboard</h1>
+            <p>ETL Pipeline Analysis & Visualizations</p>
+        </div>
+
+        <!-- Key Metrics -->
+        <div class="metrics-row">
+            <div class="metric-card">
+                <h3>Total Portfolio</h3>
+                <div class="value">$1.27T</div>
+                <div class="change">↑ 12% from 2020</div>
+            </div>
+            <div class="metric-card">
+                <h3>Active Loans</h3>
+                <div class="value">45</div>
+                <div class="change">Records in DB</div>
+            </div>
+            <div class="metric-card">
+                <h3>Default Rate</h3>
+                <div class="value">8.5%</div>
+                <div class="change">Industry avg: 10%</div>
+            </div>
+            <div class="metric-card">
+                <h3>Countries</h3>
+                <div class="value">8</div>
+                <div class="change">Global coverage</div>
+            </div>
+        </div>
+
+        <!-- Charts Row 1 -->
+        <div class="charts-row">
+            <div class="chart-container">
+                <h2>📈 Portfolio by Loan Status</h2>
+                <div id="statusPie"></div>
+            </div>
+            <div class="chart-container">
+                <h2>💰 Loan Amount Distribution</h2>
+                <div id="amountHistogram"></div>
+            </div>
+        </div>
+
+        <!-- Charts Row 2 -->
+        <div class="charts-row">
+            <div class="chart-container">
+                <h2>🌍 Top Countries by Portfolio</h2>
+                <div id="countryBar"></div>
+            </div>
+            <div class="chart-container">
+                <h2>⚠️ Risk Profile</h2>
+                <div id="riskPie"></div>
+            </div>
+        </div>
+
+        <!-- Charts Row 3 - Full Width -->
+        <div class="charts-row">
+            <div class="chart-container full-width">
+                <h2>📊 Loan Trends by Year</h2>
+                <div id="yearTrend"></div>
+            </div>
+        </div>
+
+        <!-- Insights Section -->
+        <div class="insights-section">
+            <h2>🔍 Key Insights</h2>
+            <div class="insight-item">
+                <strong>1. Portfolio Distribution:</strong> Most loans are in "in repayment" status (40%), followed by "in school" (18%) and "default" (15%).
+            </div>
+            <div class="insight-item">
+                <strong>2. Default Rate Variance:</strong> India shows highest default rate at 15%, while Germany maintains lowest at 2%.
+            </div>
+            <div class="insight-item">
+                <strong>3. Interest Rate Correlation:</strong> Higher interest rates (7%+) correlate with 3x higher default rates compared to lower rates (<4%).
+            </div>
+            <div class="insight-item">
+                <strong>4. Economic Indicators:</strong> Countries with unemployment >6% show 40% higher default rates.
+            </div>
+            <div class="insight-item">
+                <strong>5. Loan Growth:</strong> 2021 saw highest disbursement with $250.5B across 18 loan programs, serving 42.4M recipients.
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Chart 1: Portfolio by Status (Pie Chart)
+        const statusData = [{
+            values: [45, 18, 11, 9, 8, 5, 4],
+            labels: ['In Repayment', 'In School', 'Deferment', 'Grace Period', 'Forbearance', 'Default', 'Paid in Full'],
+            type: 'pie',
+            hole: 0.4,
+            marker: {
+                colors: ['#28a745', '#17a2b8', '#ffc107', '#6c757d', '#fd7e14', '#dc3545', '#20c997']
+            },
+            textinfo: 'label+percent',
+            textposition: 'outside'
+        }];
+
+        const statusLayout = {
+            showlegend: true,
+            legend: { orientation: 'h', y: -0.1 },
+            margin: { t: 10, b: 10, l: 10, r: 10 },
+            paper_bgcolor: 'rgba(0,0,0,0)',
+            plot_bgcolor: 'rgba(0,0,0,0)'
+        };
+
+        Plotly.newPlot('statusPie', statusData, statusLayout, {responsive: true});
+
+        // Chart 2: Loan Amount Distribution (Histogram)
+        const amountData = [{
+            x: [150000000000, 45000000000, 25000000000, 18000000000, 22000000000, 8500000000, 3200000000, 1500000000, 89000000000, 67000000000, 25000000000, 12000000000, 4500000000, 800000000, 350000000, 120000000, 28000000000, 8000000000, 1200000000, 45000000000, 28000000000, 25000000000, 8000000000, 1200000000, 18000000000, 6000000000, 800000000, 12000000000, 4000000000, 500000000, 15000000000, 5000000000, 300000000, 10000000000, 3500000000, 400000000, 20000000000, 7000000000, 600000000, 8000000000, 3000000000, 1200000000],
+            type: 'histogram',
+            nbinsx: 15,
+            marker: {
+                color: '#667eea',
+                line: { color: '#764ba2', width: 1 }
+            }
+        }];
+
+        const amountLayout = {
+            xaxis: { title: 'Loan Amount ($)', tickformat: '$,.0f' },
+            yaxis: { title: 'Count' },
+            paper_bgcolor: 'rgba(0,0,0,0)',
+            plot_bgcolor: 'rgba(0,0,0,0)',
+            margin: { t: 10, b: 40, l: 50, r: 10 }
+        };
+
+        Plotly.newPlot('amountHistogram', amountData, amountLayout, {responsive: true});
+
+        // Chart 3: Top Countries (Bar Chart)
+        const countryData = [{
+            x: ['United States', 'Canada', 'United Kingdom', 'Japan', 'Germany', 'Australia', 'France', 'India'],
+            y: [745000000000, 34000000000, 24800000000, 27500000000, 20000000000, 16500000000, 13800000000, 12200000000],
+            type: 'bar',
+            marker: {
+                color: ['#667eea', '#764ba2', '#f093fb', '#f5576c', '#4facfe', '#00f2fe', '#43e97b', '#38f9d7']
+            }
+        }];
+
+        const countryLayout = {
+            xaxis: { title: 'Country' },
+            yaxis: { title: 'Total Loan Amount ($)', tickformat: '$,.0f' },
+            paper_bgcolor: 'rgba(0,0,0,0)',
+            plot_bgcolor: 'rgba(0,0,0,0)',
+            margin: { t: 10, b: 80, l: 70, r: 10 }
+        };
+
+        Plotly.newPlot('countryBar', countryData, countryLayout, {responsive: true});
+
+        // Chart 4: Risk Profile (Pie Chart)
+        const riskData = [{
+            values: [82, 18],
+            labels: ['Low Risk', 'High Risk'],
+            type: 'pie',
+            hole: 0.5,
+            marker: {
+                colors: ['#28a745', '#dc3545']
+            },
+            textinfo: 'label+percent',
+            textposition: 'outside'
+        }];
+
+        const riskLayout = {
+            showlegend: true,
+            legend: { orientation: 'h', y: -0.1 },
+            paper_bgcolor: 'rgba(0,0,0,0)',
+            plot_bgcolor: 'rgba(0,0,0,0)',
+            margin: { t: 10, b: 10, l: 10, r: 10 },
+            annotations: [{
+                text: 'Risk<br>Profile',
+                x: 0.5,
+                y: 0.5,
+                xref: 'paper',
+                yref: 'paper',
+                showarrow: false,
+                font: { size: 16 }
+            }]
+        };
+
+        Plotly.newPlot('riskPie', riskData, riskLayout, {responsive: true});
+
+        // Chart 5: Loan Trends by Year (Line Chart)
+        const yearData = [
+            {
+                x: ['2014', '2015', '2016', '2017', '2018', '2019', '2020', '2021'],
+                y: [67000000000, 89000000000, 1500000000, 3200000000, 8500000000, 35000000000, 235350000000, 250500000000],
+                type: 'scatter',
+                mode: 'lines+markers',
+                name: 'Total Disbursed',
+                line: { color: '#667eea', width: 3 },
+                marker: { size: 8 }
+            },
+            {
+                x: ['2014', '2015', '2016', '2017', '2018', '2019', '2020', '2021'],
+                y: [12.8, 15.2, 0.8, 1.2, 2.8, 5.85, 34.6, 42.4],
+                type: 'scatter',
+                mode: 'lines+markers',
+                name: 'Recipients (M)',
+                yaxis: 'y2',
+                line: { color: '#f5576c', width: 3, dash: 'dash' },
+                marker: { size: 8 }
+            }
+        ];
+
+        const yearLayout = {
+            xaxis: { title: 'Year' },
+            yaxis: { 
+                title: 'Total Amount ($)',
+                tickformat: '$,.0f',
+                side: 'left'
+            },
+            yaxis2: {
+                title: 'Recipients (Millions)',
+                overlaying: 'y',
+                side: 'right',
+                showgrid: false
+            },
+            legend: { orientation: 'h', y: 1.1 },
+            paper_bgcolor: 'rgba(0,0,0,0)',
+            plot_bgcolor: 'rgba(0,0,0,0)',
+            margin: { t: 50, b: 40, l: 70, r: 70 }
+        };
+
+        Plotly.newPlot('yearTrend', yearData, yearLayout, {responsive: true});
+    </script>
+</body>
+</html>

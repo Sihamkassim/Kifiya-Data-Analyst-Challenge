@@ -1,0 +1,56 @@
+# Environment Variables (NEVER commit credentials)
+.env
+
+# Python Virtual Environment
+.venv/
+venv/
+ENV/
+/docs
+# Python Cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# Database Files (generated during ETL)
+*.db
+*.sqlite
+*.sqlite3
+
+# Large Data Files (3.5GB - too big for git)
+*.json
+data/*.json
+world_bank_data.json
+
+# Generated CSV Files
+cleaned_*.csv
+*.csv
+
+# IDE Files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS Files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+
+# Output files
+column_mapping.txt
+*.xls
+*.xlsx
+
+# World Bank specific
+world_bank.db
+worldbank_streaming.py
