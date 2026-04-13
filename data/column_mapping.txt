@@ -1,0 +1,24 @@
+Column Mapping for this dataset:
+========================================
+Amount column: None
+Status column: None
+Rate column: None
+Date column: None
+
+All columns:
+  - Federal Fiscal Year
+  - Unnamed: 1
+  - Dollars Outstanding           (in billions)
+  - Recipients     (in millions)
+  - Dollars Outstanding            (in billions)
+  - Recipients     (in millions).1
+  - Dollars Outstanding           (in billions).1
+  - Recipients     (in millions).2
+  - Dollars Outstanding            (in billions).1
+  - Recipients     (in millions).3
+  - Dollars Outstanding           (in billions).2
+  - Recipients     (in millions).4
+  - Dollars Outstanding            (in billions).2
+  - Recipients     (in millions).5
+  - Dollars Outstanding           (in billions).3
+  - Recipients     (in millions).6

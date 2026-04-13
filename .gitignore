@@ -14,9 +14,8 @@ __pycache__/
 .Python
 
 # Database Files (generated during ETL)
-*.db
-*.sqlite
-*.sqlite3
+
+
 
 # Large Data Files (3.5GB - too big for git)
 *.json
@@ -47,10 +46,8 @@ temp/
 *.tmp
 
 # Output files
-column_mapping.txt
-*.xls
-*.xlsx
+
 
 # World Bank specific
 world_bank.db
-worldbank_streaming.py
+
